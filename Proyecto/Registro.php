@@ -8,12 +8,9 @@ Antes de mostar esta página se debió ejecutar lo siguiente
     session_start();
 
     include_once 'utils.php';
+    include_once 'model.php';
 
     include_once 'config.php';
-
-    //crear Conexión
-    //Variables en archivo config
-    $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
 
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
@@ -35,9 +32,7 @@ Antes de mostar esta página se debió ejecutar lo siguiente
             }
             else
             {
-                $sql = "SELECT * FROM Usuarios Where NombreUsuario='$nombreUsuario'";
-                $resultado = mysqli_query($con, $sql);
-                $aux = mysqli_fetch_array($resultado);
+                $aux = consultarUsuario($nombreUsuario);
                 if($aux != null)
                 {
                     $_SESSION['errNombreUsuario'] = "Ya existe un Usuario con este nombre!";
@@ -140,33 +135,24 @@ Antes de mostar esta página se debió ejecutar lo siguiente
                     {
                         $cadena ="<p>";
 
-                        if (CRYPT_SHA512 == 1) 
+                        $contraseña = encriptar($contraseña);
+
+                        $usuario = new Usuario($nombreUsuario,$correo,$contraseña,'medico');
+
+                        if(insertarusuario($usuario))
                         {
-                            $contraseña = crypt($contraseña, '$6$rounds=5000$usesomesillystringforsaltforexamplelapujamijo$');
-
-                            $rol = 'usuario';
-                            
-                            $sql = "INSERT INTO Usuarios (NombreUsuario,Rol,Contraseña,Email) VALUES ('$nombreUsuario', '$rol', '$contraseña', '$correo');";
-                            if(mysqli_query($con, $sql))
-                            {
-                                $cadena .= "<strong>Usuario con:</strong><br><br>Nombre de Usuario: $nombreUsuario<br>Rol: $rol<br>Correo: $correo<br>
-                                    <br><strong>Creado correctamente</strong>";
-                            }
-                            else
-                            {
-                                $cadena .= "Error en la creación del Usuario con nombre de usuario $nombreUsuario " . mysqli_error($con);
-                            }
-
-                            $cadena .= "</p>";
-                            echo $cadena;
+                            $cadena .= "<strong>Usuario con:</strong><br><br>Nombre de Usuario: $nombreUsuario<br>Rol: $usuario->rol<br>Correo: $correo<br>
+                                <br><strong>Creado correctamente</strong>";
                         }
                         else
                         {
-                            $cadena.= "Error en la encriptación de la contraseña con CRYPT_SHA512</p>";
-                            echo $cadena;
+                            $cadena .= "Error en la creación del Usuario con nombre de usuario $nombreUsuario ";
                         }
+
+                        $cadena .= "</p>";
+                        echo $cadena;
+
                     }
-                    mysqli_close($con);
                 ?>
             </div>
             <div class="container">

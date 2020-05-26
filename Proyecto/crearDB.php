@@ -1,7 +1,7 @@
 <?php
     //incluir archivo de configuración con usuario y contraseña
     //dirname: misma carpeta donde estoy
-    include_once dirname(__FILE__) . '/config.php';
+    include_once 'config.php';
 
     //crear Conexión
     //Variables en archivo config

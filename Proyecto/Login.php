@@ -10,10 +10,6 @@ Antes de mostar esta página se debió ejecutar lo siguiente
     include_once 'config.php';
     include_once 'utils.php';
 
-    //crear Conexión
-    //Variables en archivo config
-    $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
-
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
         $error = false;
@@ -45,12 +41,10 @@ Antes de mostar esta página se debió ejecutar lo siguiente
         }
         else
         {
-            $sql = "SELECT * FROM Usuarios Where NombreUsuario='$nombreUsuario'";
-            $resultado = mysqli_query($con, $sql);
-            $usuario = mysqli_fetch_array($resultado);
+            $usuario = consultarUsuario($nombreUsuario);
             if($usuario != null)
             {
-                if (hash_equals($usuario['Contraseña'], crypt($contraseña, $usuario['Contraseña'])))
+                if (compararPassword($usuario['Contraseña'], $contraseña))
                 {
                     eliminarSessionV('nombreUsuario');
                     if($usuario['Rol'] == "usuario")

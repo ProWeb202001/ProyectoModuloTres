@@ -2,7 +2,9 @@
 
     //incluir archivo de configuración con usuario y contraseña
     //dirname: misma carpeta donde estoy
-    include_once dirname(__FILE__) . '/config.php';
+    include_once 'config.php';
+    include_once 'model.php';
+    include_once 'utils.php';
 
     //crear Conexión
     //Variables en archivo config
@@ -26,13 +28,22 @@
         /* $sql = "DROP TABLE Usuarios"; */
         if(mysqli_query($con, $sql))
         {
-            echo "Tabla Usuarios creada correctamente";
+            echo "Tabla Usuarios creada correctamente<br><br>";
+            $usuario = new Usuario('Admin', 'admin', 'proweb202001@gmail.com','holamundo');
+            if(insertarUsuario($usuario))
+            {
+                echo "Usuario Admin Insertado";
+            }
+            else
+            {
+                echo "Error en la inserción " . mysqli_error($con);
+            }
+
         }
         else
         {
             echo "Error en la creacion " . mysqli_error($con);
         }
-
     }
     mysqli_close($con);
 
