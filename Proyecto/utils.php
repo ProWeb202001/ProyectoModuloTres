@@ -25,8 +25,16 @@
         $sql = "SELECT * FROM Usuarios Where NombreUsuario='$nombreUsuario'";
         $resultado = mysqli_query($con, $sql);
         $user = mysqli_fetch_array($resultado);
-        $usuario = new Usuario($user['UserID'],$user['NombreUsuario'],$user['Email'], $user['Contraseña'], $user['Rol']);
+        if($user!=null)
+        {
+            $usuario = new Usuario($user['UserID'],$user['NombreUsuario'],$user['Email'], $user['Contraseña'], $user['Rol']);
+        }
+        else
+        {
+            $usuario = null;
+        }
         mysqli_close($con);
+        
         return $usuario;
     }
 
@@ -36,7 +44,14 @@
         $sql = "SELECT * FROM Usuarios Where UserID='$id'";
         $resultado = mysqli_query($con, $sql);
         $user = mysqli_fetch_array($resultado);
-        $usuario = new Usuario($user['UserID'],$user['NombreUsuario'],$user['Email'], $user['Contraseña'], $user['Rol']);
+        if($user!=null)
+        {
+            $usuario = new Usuario($user['UserID'],$user['NombreUsuario'],$user['Email'], $user['Contraseña'], $user['Rol']);
+        }
+        else
+        {
+            $usuario = null;
+        }
         mysqli_close($con);
         return $usuario;
     }
@@ -45,7 +60,7 @@
     {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
         $bandera = false;
-        $sql = "UPDATE Usuarios SET NombreUsuario='{$usuario->nombreUsuario}', Email = '{$usuario->email}', Contraseña = '{$usuario->password}', Rol = '{$usuario->rol}'  WHERE UserID = '{$usuario->id}';";
+        $sql = "UPDATE Usuarios SET NombreUsuario='{$usuario->nombreUsuario}', Email = '{$usuario->email}', Rol = '{$usuario->rol}'  WHERE UserID = '{$usuario->id}';";
         if(mysqli_query($con, $sql))
         {
             $bandera= true;
@@ -97,6 +112,280 @@
         }
         mysqli_close($con);
         return $medicos;
+    }
+
+    function obtenerHabitaciones()
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Habitaciones";
+
+        $resultado = mysqli_query($con, $sql);
+        $habitaciones=array();
+        $i = 0;
+        while($fila = mysqli_fetch_array($resultado))
+        {
+            $habitacion = new Habitacion($fila['ID'], $fila['Numero']);
+            $habitaciones[$i] = $habitacion;
+            $i += 1;
+        }
+        mysqli_close($con);
+        return $habitaciones;
+    }
+
+    function insertarHabitacion($habitacion)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $sql = "INSERT INTO Habitaciones (Numero) VALUES ('$habitacion->numero')";
+        if(mysqli_query($con, $sql))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        mysqli_close($con);
+    }
+
+    function consultarHabitacion($numero)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $sql = "SELECT * FROM Habitaciones Where Numero='$numero'";
+        $resultado = mysqli_query($con, $sql);
+        $hab = mysqli_fetch_array($resultado);
+        if($hab!=null)
+        {
+            $habitacion = new Habitacion($hab['ID'],$hab['Numero']);
+        }
+        else
+        {
+            $habitacion = null;
+        }
+        mysqli_close($con);
+        
+        return $habitacion;
+    }
+
+    function consultarHabitacionByID($id)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $sql = "SELECT * FROM Habitaciones Where ID='$id'";
+        $resultado = mysqli_query($con, $sql);
+        $hab = mysqli_fetch_array($resultado);
+        if($hab!=null)
+        {
+            $habitacion = new Habitacion($hab['ID'],$hab['Numero']);
+        }
+        else
+        {
+            $habitacion = null;
+        }
+        mysqli_close($con);
+        
+        return $habitacion;
+    }
+
+    function obtenerCamasHabitacion($id)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $sql = "SELECT * FROM Camas Where HabitacionID='$id'";
+        $resultado = mysqli_query($con, $sql);
+        $camas = array();
+        $i = 0;
+        while($fila = mysqli_fetch_array($resultado))
+        {
+            $cama = new Camas($fila['ID'],$fila['Numero'],$fila['HabitacionID']);
+            $camas[$i] = $cama;
+            $i += 1;
+        }
+        mysqli_close($con);
+        return $camas;
+    }
+
+    function consultarCama($numero)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $sql = "SELECT * FROM Camas Where Numero='$numero'";
+        $resultado = mysqli_query($con, $sql);
+        $cama = mysqli_fetch_array($resultado);
+        if($cama!=null)
+        {
+            $cama = new Camas($cama['ID'],$cama['Numero'],$cama['HabitacionID']);
+        }
+        else
+        {
+            $cama = null;
+        }
+        mysqli_close($con);
+        
+        return $cama;
+    }
+
+    function consultarCamaH($numero,$habID)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $sql = "SELECT * FROM Camas Where Numero='$numero'AND HabitacionID='$habID'";
+        $resultado = mysqli_query($con, $sql);
+        $cama = mysqli_fetch_array($resultado);
+        if($cama!=null)
+        {
+            $cama = new Camas($cama['ID'],$cama['Numero'],$cama['HabitacionID']);
+        }
+        else
+        {
+            $cama = null;
+        }
+        mysqli_close($con);
+        
+        return $cama;
+    }
+
+    function consultarCamaByID($id)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $sql = "SELECT * FROM Camas Where ID='$id'";
+        $resultado = mysqli_query($con, $sql);
+        $cama = mysqli_fetch_array($resultado);
+        if($cama!=null)
+        {
+            $cama = new Camas($cama['ID'],$cama['Numero'],$cama['HabitacionID']);
+        }
+        else
+        {
+            $cama = null;
+        }
+        mysqli_close($con);
+        
+        return $cama;
+    }
+
+    function insertarCama($cama)
+    {
+        $bandera = false;
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $idHab = 0;
+        $idHab = (int)$cama->habID;
+        $sql = "INSERT INTO Camas (Numero,HabitacionID) VALUES ('$cama->numero', '$idHab')";
+        if(mysqli_query($con, $sql))
+        {
+            $bandera = true;
+        }
+        else
+        {
+            echo "Error en la creacion " . mysqli_error($con)."<br><br>";
+            $bandera= false;
+        }
+        mysqli_close($con);
+
+        return $bandera;
+    }
+
+    function obtenerPacientes()
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Pacientes";
+
+        $resultado = mysqli_query($con, $sql);
+        $personas=array();
+        $i = 0;
+        while($fila = mysqli_fetch_array($resultado))
+        {
+            $persona = new Paciente($fila['PID'],$fila['Identificacion'],$fila['Nombre'],$fila['Diagnostico'],$fila['Prioridad'],$fila['FechaIngreso'],$fila['DuracionDias'],$fila['CamaID'],$fila['MedicoID']);
+            $personas[$i] = $persona;
+            $i += 1;
+        }
+        mysqli_close($con);
+        return $personas;
+    }
+
+    function obtenerHabitacionesDisponibles()
+    {
+        $habitaciones = obtenerHabitaciones();
+
+        $habitacionesDisp = array();
+        $i=0;
+        foreach($habitaciones as $h)
+        {
+            $camas = obtenerCamasDisponiblesByHabID($h->id);
+            if(count($camas)>0)
+            {
+                $habitacionesDisp[$i] = $h;
+                $i += 1;
+            }
+        }
+
+        return $habitacionesDisp;
+    }
+
+    function obtenerCamasDisponiblesByHabID($id)
+    {
+        $camas = obtenerCamasHabitacion($id);
+        $pacientes = obtenerPacientes();
+
+        $i = 0;
+
+        $camasDisponibles = array();
+
+        foreach($camas as $c)
+        {
+            $bandera = false;
+            foreach($pacientes as $p)
+            {
+                if($p->camaID == $c->id)
+                {
+                    $bandera = true;
+                }
+            }
+            if($bandera == false)
+            {
+                $camasDisponibles[$i]= $c;
+                $i += 1;
+            }
+        }
+        return $camasDisponibles;
+    }
+
+    function consultarPaciente($identificacion)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $sql = "SELECT * FROM Pacientes Where Identificacion='$identificacion'";
+        $resultado = mysqli_query($con, $sql);
+        $paciente = mysqli_fetch_array($resultado);
+        if($paciente!=null)
+        {
+            $paciente = new Paciente($paciente['PID'],$paciente['Identificacion'],$paciente['Nombre'],$paciente['Diagnostico'], $paciente['Prioridad'],$paciente['FechaIngreso'],$paciente['DuracionDias'],$paciente['CamaID'],$paciente['MedicoID']);
+        }
+        else
+        {
+            $paciente = null;
+        }
+        mysqli_close($con);
+        
+        return $paciente;
+    }
+
+    function insertarPaciente($paciente)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $fecha = $paciente->fechaIngreso;
+        $valores = explode('/', $fecha);
+
+        $fecha = $valores[2]."-".$valores[1]."-".$valores[0];
+
+        $sql = "INSERT INTO Pacientes (Identificacion, Nombre, Diagnostico, Prioridad, FechaIngreso, DuracionDias, CamaID, MedicoID) 
+                VALUES ('$paciente->identificacion', '$paciente->nombre','$paciente->diagnostico','$paciente->prioridad','$fecha','$paciente->duracionDias','$paciente->camaID','$paciente->medicoID')";
+        if(mysqli_query($con, $sql))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        mysqli_close($con);
     }
 
 ?>

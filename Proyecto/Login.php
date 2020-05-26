@@ -51,7 +51,7 @@ Antes de mostar esta página se debió ejecutar lo siguiente
                     if($usuario->rol == "medico")
                     {
                         $_SESSION['User']='medico';
-                        header("Location: medico.php?id=".$usuario->id);
+                        header("Location: medico.php");
                     }
                     elseif($usuario->rol == "admin")
                     {

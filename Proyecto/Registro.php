@@ -135,8 +135,6 @@ Antes de mostar esta página se debió ejecutar lo siguiente
                     {
                         $cadena ="<p>";
 
-                        $contraseña = encriptar($contraseña);
-
                         $usuario = new Usuario(null,$nombreUsuario,$correo,$contraseña,'medico');
 
                         if(insertarusuario($usuario))
