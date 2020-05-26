@@ -113,6 +113,9 @@ Antes de mostar esta página se debió ejecutar lo siguiente
                         eliminarSessionV('errContraseña');
                     ?>
                     <button type="submit" class="btn btn-primary">Registrarse</button>
+                    <br>
+                    <br>
+                    <a href = "Login_F.php">Ya estas registrado? Inicia Sesión !</a>
                 </form>
             </div>
         </div>

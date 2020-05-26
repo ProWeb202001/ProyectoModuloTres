@@ -137,7 +137,7 @@ Antes de mostar esta página se debió ejecutar lo siguiente
 
                         $contraseña = encriptar($contraseña);
 
-                        $usuario = new Usuario($nombreUsuario,$correo,$contraseña,'medico');
+                        $usuario = new Usuario(null,$nombreUsuario,$correo,$contraseña,'medico');
 
                         if(insertarusuario($usuario))
                         {

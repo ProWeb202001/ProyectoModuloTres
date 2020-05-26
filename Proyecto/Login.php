@@ -9,6 +9,7 @@ Antes de mostar esta página se debió ejecutar lo siguiente
 
     include_once 'config.php';
     include_once 'utils.php';
+    include_once 'model.php';
 
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
@@ -44,20 +45,20 @@ Antes de mostar esta página se debió ejecutar lo siguiente
             $usuario = consultarUsuario($nombreUsuario);
             if($usuario != null)
             {
-                if (compararPassword($usuario['Contraseña'], $contraseña))
+                if (compararPassword($usuario->password, $contraseña))
                 {
                     eliminarSessionV('nombreUsuario');
-                    if($usuario['Rol'] == "usuario")
+                    if($usuario->rol == "medico")
                     {
-                        $_SESSION['User']='usuario';
-                        header("Location: perfil.php?id=".$usuario['UserID']);
+                        $_SESSION['User']='medico';
+                        header("Location: medico.php?id=".$usuario->id);
                     }
-                    elseif($usuario['Rol'] == "admin")
+                    elseif($usuario->rol == "admin")
                     {
                         $_SESSION['User']='admin';
-                        header("Location: verUsuarios.php");
+                        header("Location: admin.php");
                     }
-                    $_SESSION['UserID']=$usuario['UserID'];
+                    $_SESSION['UserID']=$usuario->id;
                 }
                 else
                 {
