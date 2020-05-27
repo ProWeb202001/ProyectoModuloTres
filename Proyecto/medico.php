@@ -38,10 +38,7 @@ Antes de mostar esta página se debió ejecutar lo siguiente
 
             <div class="container">
                 <a href="listarHabitaciones.php"><button type="button" class= "btn btn-primary">Visualizar Habitaciones</button></a>
-<<<<<<< HEAD
                 <a href="listarPacientes.php"><button type="button" class= "btn btn-primary">Visualizar Pacientes</button></a>
-=======
->>>>>>> 61c7ea713cd95461eec895891830a53a8de0e2d2
             </div>
         </div>
     </body>

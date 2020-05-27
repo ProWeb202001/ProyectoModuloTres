@@ -95,7 +95,6 @@
         return hash_equals($p1, crypt($p2, $p1));
     }
 
-<<<<<<< HEAD
     /**
      * -----------------------------------------------------------------------
      * 
@@ -121,8 +120,6 @@
         return $medico; 
         
     }
-=======
->>>>>>> 61c7ea713cd95461eec895891830a53a8de0e2d2
     function obtenerMedicos()
     {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
@@ -230,18 +227,11 @@
         mysqli_close($con);
         return $camas;
     }
-<<<<<<< HEAD
+    
     function consultarCamaH($numero,$habID)
     {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
         $sql = "SELECT * FROM Camas Where Numero='$numero'AND HabitacionID='$habID'";
-=======
-
-    function consultarCama($numero)
-    {
-        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
-        $sql = "SELECT * FROM Camas Where Numero='$numero'";
->>>>>>> 61c7ea713cd95461eec895891830a53a8de0e2d2
         $resultado = mysqli_query($con, $sql);
         $cama = mysqli_fetch_array($resultado);
         if($cama!=null)
@@ -256,7 +246,6 @@
         
         return $cama;
     }
-<<<<<<< HEAD
     function obtenerHabitacionesDisponibles()
     {
         $habitaciones = obtenerHabitaciones();
@@ -315,13 +304,6 @@
     {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
         $sql = "SELECT * FROM Camas Where Numero='$numero'";
-=======
-
-    function consultarCamaH($numero,$habID)
-    {
-        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
-        $sql = "SELECT * FROM Camas Where Numero='$numero'AND HabitacionID='$habID'";
->>>>>>> 61c7ea713cd95461eec895891830a53a8de0e2d2
         $resultado = mysqli_query($con, $sql);
         $cama = mysqli_fetch_array($resultado);
         if($cama!=null)
@@ -336,10 +318,7 @@
         
         return $cama;
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 61c7ea713cd95461eec895891830a53a8de0e2d2
+    
     function consultarCamaByID($id)
     {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
@@ -358,10 +337,7 @@
         
         return $cama;
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> 61c7ea713cd95461eec895891830a53a8de0e2d2
     function insertarCama($cama)
     {
         $bandera = false;
@@ -383,7 +359,6 @@
         return $bandera;
     }
 
-<<<<<<< HEAD
 
     
     
@@ -394,8 +369,6 @@
      * 
      * -----------------------------------------------------------------------
      */
-=======
->>>>>>> 61c7ea713cd95461eec895891830a53a8de0e2d2
     function obtenerPacientes()
     {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
@@ -415,7 +388,6 @@
         return $personas;
     }
 
-<<<<<<< HEAD
     function obtenerPacientesByMedico($medicoID)
     {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
@@ -432,6 +404,7 @@
         mysqli_close($con);
         return $personas;
     }
+
     function consultarPaciente($identificacion)
     {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
@@ -450,63 +423,11 @@
         
         return $paciente;
     }
+
     function consultarPacienteByID($id)
     {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
         $sql = "SELECT * FROM Pacientes Where PID='$id'";
-=======
-    function obtenerHabitacionesDisponibles()
-    {
-        $habitaciones = obtenerHabitaciones();
-
-        $habitacionesDisp = array();
-        $i=0;
-        foreach($habitaciones as $h)
-        {
-            $camas = obtenerCamasDisponiblesByHabID($h->id);
-            if(count($camas)>0)
-            {
-                $habitacionesDisp[$i] = $h;
-                $i += 1;
-            }
-        }
-
-        return $habitacionesDisp;
-    }
-
-    function obtenerCamasDisponiblesByHabID($id)
-    {
-        $camas = obtenerCamasHabitacion($id);
-        $pacientes = obtenerPacientes();
-
-        $i = 0;
-
-        $camasDisponibles = array();
-
-        foreach($camas as $c)
-        {
-            $bandera = false;
-            foreach($pacientes as $p)
-            {
-                if($p->camaID == $c->id)
-                {
-                    $bandera = true;
-                }
-            }
-            if($bandera == false)
-            {
-                $camasDisponibles[$i]= $c;
-                $i += 1;
-            }
-        }
-        return $camasDisponibles;
-    }
-
-    function consultarPaciente($identificacion)
-    {
-        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
-        $sql = "SELECT * FROM Pacientes Where Identificacion='$identificacion'";
->>>>>>> 61c7ea713cd95461eec895891830a53a8de0e2d2
         $resultado = mysqli_query($con, $sql);
         $paciente = mysqli_fetch_array($resultado);
         if($paciente!=null)
@@ -543,7 +464,6 @@
         }
         mysqli_close($con);
     }
-<<<<<<< HEAD
     /**
      * -----------------------------------------------------------------------
      * 
@@ -572,7 +492,87 @@
         mysqli_close($con);
         return $equipos;
     }
-=======
 
->>>>>>> 61c7ea713cd95461eec895891830a53a8de0e2d2
+    /**
+     * -----------------------------------------------------------------------
+     * 
+     * Metodos para Recursos
+     * 
+     * -----------------------------------------------------------------------
+     */
+    
+     function obtenerRecursos()
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Recursos ORDER BY Cantidad ASC";
+
+        $resultado = mysqli_query($con, $sql);
+        $recursos=array();
+        $i = 0;
+        while($fila = mysqli_fetch_array($resultado))
+        {
+            $recurso = new Recursos($fila['ID'], $fila['Nombre'], $fila['Cantidad']);
+            $recursos[$i] = $recurso;
+            $i += 1;
+        }
+        mysqli_close($con);
+        return $recursos;
+     }
+
+     function consultarRecurso($nombre)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Recursos WHERE Nombre='$nombre'";
+
+        $resultado = mysqli_query($con, $sql);
+        $recurso = mysqli_fetch_array($resultado);
+        if($recurso!=null)
+        {
+            $recurso = new Recursos($recurso['ID'],$recurso['Nombre'],$recurso['Cantidad']);
+        }
+        else
+        {
+            $recurso = null;
+        }
+        mysqli_close($con);
+        return $recurso;
+     }
+
+     function consultarRecursoByID($id)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Recursos WHERE ID='$id'";
+
+        $resultado = mysqli_query($con, $sql);
+        $recurso = mysqli_fetch_array($resultado);
+        if($recurso!=null)
+        {
+            $recurso = new Recursos($recurso['ID'],$recurso['Nombre'],$recurso['Cantidad']);
+        }
+        else
+        {
+            $recurso = null;
+        }
+        mysqli_close($con);
+        return $recurso;
+     }
+
+     function insertarRecurso($rec)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "INSERT INTO Recursos (Nombre, Cantidad) VALUES ('$rec->nombre', '$rec->cantidad')";
+        if(mysqli_query($con, $sql))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        mysqli_close($con);
+     }
 ?>

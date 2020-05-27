@@ -68,7 +68,7 @@
             $this->medicoID = $medicoID;
         }
     }
-<<<<<<< HEAD
+
     class EquipoAsigando
     {
         var $id;
@@ -88,6 +88,35 @@
             $this->nombre = $nombre;
         }
     }
-=======
->>>>>>> 61c7ea713cd95461eec895891830a53a8de0e2d2
+
+    class Recursos
+    {
+        var $id;
+        var $nombre; 
+        var $cantidad;
+        
+        function __construct($id,$nombre,$cantidad)
+        {
+            $this->id = $id;
+            $this->cantidad = $cantidad;
+            $this->nombre = $nombre;
+        }
+    }
+
+    class Recursos_Asignados
+    {
+        var $RecursoID;
+        var $pacienteID;
+        var $FechaPedido;
+        var $cantidad;
+        
+        function __construct($RecursoID, $pacienteID,$FechaPedido, $cantidad)
+        {
+            $this->RecursoID = $RecursoID;
+            $this->pacienteID = $pacienteID;
+            $this->FechaPedido = $FechaPedido;
+            $this->cantidad = $cantidad;
+
+        }
+    }
 ?>

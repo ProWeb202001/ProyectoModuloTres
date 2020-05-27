@@ -13,13 +13,13 @@ Antes de mostar esta página se debió ejecutar lo siguiente
     session_start();
 
     $error = false;
-    $admin = true;
 
     if(isset($_SESSION['User']))
     {
         if($_SESSION['User'] == "medico")
         {
-            $admin = false;
+            $error = true;
+            header("Location: medico.php");
         }
     }
     else
@@ -30,16 +30,7 @@ Antes de mostar esta página se debió ejecutar lo siguiente
 
     if($error == false)
     {
-        if($admin)
-        {
-            $pacientes = obtenerPacientes();
-        }
-        else
-        {
-            $medicoID = $_SESSION['UserID'];
-            $pacientes = obtenerPacientesByMedico($medicoID);
-        }
-        
+        $recursos = obtenerRecursos();        
     }
 
 ?>
@@ -48,32 +39,32 @@ Antes de mostar esta página se debió ejecutar lo siguiente
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Visualizar Pacientes </title>
+        <title>Visualizar Recursos <?php if(!$admin){echo $disponible;} ?></title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     </head>
     <body>
         <div class="container" style="border-radius: 30px;border: solid;padding: 30px;margin-top: 3%;">
             <div class="container">
-                <h2>Visualizar Pacientes</h2>
+                <h2>Visualizar Recursos</h2>
             </div>
             <div class="container">
                 <table class="table">
                     <thead>
                         <tr>
                             <th scope="col">ID</th>
-                            <th scope="col">Identificación</th>
                             <th scope="col">Nombre</th>
+                            <th scope="col">Cantidad</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                             $cadena = "";
-                            foreach($pacientes as $h)
+                            foreach($recursos as $r)
                             {
                                 $cadena.="<tr>";
-                                $cadena .= "<td><a href='paciente.php?id=".$h->pid."'>".$h->pid."</a></td>";
-                                $cadena .= "<td>".$h->identificacion."</td>";
-                                $cadena .= "<td>".$h->nombre."</td>";
+                                $cadena .= "<td><a href='recurso.php?id=".$r->id."'>".$r->id."</a></td>";
+                                $cadena .= "<td>".$r->nombre."</td>";
+                                $cadena .= "<td>".$r->cantidad."</td>";
                                 $cadena .= "</tr>";
                             }
                             echo $cadena;
@@ -82,7 +73,8 @@ Antes de mostar esta página se debió ejecutar lo siguiente
                 </table>
             </div>
             <div class="container">
-                <a href = "<?php if(!$admin){echo "medico.php";}else{echo "admin.php";} ?>"><button class="btn btn-primary" type ="button">Volver</button></a>
+                <a href = "agregarR.php"><button class="btn btn-primary" type ="button">+</button></a>
+                <a href = "admin.php"><button class="btn btn-primary" type ="button">Volver</button></a>
             </div>
         </div>
     </body>
