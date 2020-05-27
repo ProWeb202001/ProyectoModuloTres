@@ -68,6 +68,7 @@
             $this->medicoID = $medicoID;
         }
     }
+<<<<<<< HEAD
     class EquipoAsigando
     {
         var $id;
@@ -87,4 +88,6 @@
             $this->nombre = $nombre;
         }
     }
+=======
+>>>>>>> 61c7ea713cd95461eec895891830a53a8de0e2d2
 ?>
