@@ -9,10 +9,7 @@ Antes de mostar esta página se debió ejecutar lo siguiente
 
     include_once 'config.php';
     include_once 'utils.php';
-
-    //crear Conexión
-    //Variables en archivo config
-    $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+    include_once 'model.php';
 
     if($_SERVER["REQUEST_METHOD"] == "POST")
     {
@@ -45,25 +42,23 @@ Antes de mostar esta página se debió ejecutar lo siguiente
         }
         else
         {
-            $sql = "SELECT * FROM Usuarios Where NombreUsuario='$nombreUsuario'";
-            $resultado = mysqli_query($con, $sql);
-            $usuario = mysqli_fetch_array($resultado);
+            $usuario = consultarUsuario($nombreUsuario);
             if($usuario != null)
             {
-                if (hash_equals($usuario['Contraseña'], crypt($contraseña, $usuario['Contraseña'])))
+                if (compararPassword($usuario->password, $contraseña))
                 {
                     eliminarSessionV('nombreUsuario');
-                    if($usuario['Rol'] == "usuario")
+                    if($usuario->rol == "medico")
                     {
-                        $_SESSION['User']='usuario';
-                        header("Location: perfil.php?id=".$usuario['UserID']);
+                        $_SESSION['User']='medico';
+                        header("Location: medico.php");
                     }
-                    elseif($usuario['Rol'] == "admin")
+                    elseif($usuario->rol == "admin")
                     {
                         $_SESSION['User']='admin';
-                        header("Location: verUsuarios.php");
+                        header("Location: admin.php");
                     }
-                    $_SESSION['UserID']=$usuario['UserID'];
+                    $_SESSION['UserID']=$usuario->id;
                 }
                 else
                 {
