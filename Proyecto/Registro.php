@@ -50,9 +50,9 @@ Antes de mostar esta página se debió ejecutar lo siguiente
         {
             $correo = limpiar_entrada($_POST['Email']);
             $_SESSION['email'] = $correo;
-            if (!preg_match("/^[a-zA-Z]([a-zA-Z0-9-_]*[a-zA-Z0-9])?\@[a-zA-Z]([a-zA-Z-_]*[a-zA-Z])?(\.[a-zA-Z]+)+$/",$correo))
+            if (!preg_match("/^[a-zA-Z]([a-zA-Z0-9-_\.]*[a-zA-Z0-9])?\@[a-zA-Z]([a-zA-Z-_]*[a-zA-Z])?(\.[a-zA-Z]+)+$/",$correo))
             {
-                $_SESSION['errEmail'] = "El usuario del correo solo puede contener letras, números o '_' o '-', no puede empezar con números ni '-' ni '_' y no puede terminar con '-' ni '_'.</p>
+                $_SESSION['errEmail'] = "El usuario del correo solo puede contener letras, números, '.', '_' o '-', no puede empezar con números ni '-' ni '_' y no puede terminar con '-' ni '_'.</p>
                                         <p style='color: red'>Seguido debe tener un '@'.</p><p style='color: red'>Seguido debe estar el nombre del servidor, el cual solo puede contener letras o '_' o '-', 
                                         no puede empezar ni terminar con '-' o '_'.</p><p style='color: red'>Seguido van los dominios, que empieza con un '.' 
                                         seguido de letras (pueden haber varios dominios)!";

@@ -39,6 +39,9 @@ Antes de mostar esta página se debió ejecutar lo siguiente
             <div class="container">
                 <a href="listarHabitaciones.php"><button type="button" class= "btn btn-primary">Visualizar Habitaciones</button></a>
                 <a href="listarPacientes.php"><button type="button" class= "btn btn-primary">Visualizar Pacientes</button></a>
+                <br>
+                <br>
+                <a href="Login_F.php"><button type="button" class= "btn btn-primary">Salir</button></a>
             </div>
         </div>
     </body>

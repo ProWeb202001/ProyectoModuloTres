@@ -24,9 +24,9 @@ Antes de mostar esta página se debió ejecutar lo siguiente
         {
             $nombre = limpiar_entrada($_POST['Nombre']);
             $_SESSION['nombre'] = $nombre;
-            if (!preg_match("/^[a-zA-Z0-9-_]+$/",$nombre))
+            if (!preg_match("/^[a-zA-Z0-9-_ ]+$/",$nombre))
             {
-                $_SESSION['errNombre'] = "Solo letras, números, '-' o '_'!";
+                $_SESSION['errNombre'] = "Solo letras, números, espacios, '-' o '_'!";
                 $error = true;
             }
             else

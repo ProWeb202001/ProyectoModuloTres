@@ -1,5 +1,4 @@
 <?php
-
     include_once 'model.php';
     include_once 'config.php';
 
@@ -749,12 +748,12 @@
         $i = 0;
         while($fila = mysqli_fetch_array($resultado))
         {
-            $recurso = new Recursos($fila['ID'], $fila['Nombre'], $fila['Cantidad']);
-            $recursos[$i] = $recurso;
+            $equipo = new Equipos($fila['ID'], $fila['Nombre'], $fila['Cantidad']);
+            $equipos[$i] = $equipo;
             $i += 1;
         }
         mysqli_close($con);
-        return $recursos;
+        return $equipos;
      }
      function consultarEquipo($nombre)
      {
@@ -775,6 +774,7 @@
         mysqli_close($con);
         return $equipo;
      }
+
      function consultarEquipoByID($id)
      {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
@@ -794,6 +794,7 @@
         mysqli_close($con);
         return $equipo;
      }
+
      function consultarEquipoAsignadoByID($id)
      {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
@@ -940,7 +941,6 @@
     }
     function updateEquipoAsignado($rec)
     {
-        echo "Id eA: ".$rec->id." Id pacienteN: ".$rec->pacienteID;
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
         $bandera = false;
         $sql = "UPDATE Equipos_Asignados SET PacienteID='$rec->pacienteID'  WHERE ID = '$rec->id'";
@@ -972,7 +972,7 @@
         return $equipos;
     }
     function obtenerEquipoAsignadoByID($id)
-     {
+    {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
 
         $sql = "SELECT * FROM equipos_asignados WHERE ID ='$id'";
@@ -989,5 +989,123 @@
         }
         mysqli_close($con);
         return $equipoA;
+    }
+
+    function obtenerMensajes()
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+            $sql = "SELECT Mensajes_admin.ID,EquipoID,PacienteID,FechaPedido,Mensajes_admin.Cantidad,Nombre 
+            FROM Mensajes_admin 
+            INNER JOIN equipos ON 
+            Mensajes_admin.EquipoID=equipos.ID ORDER BY FechaPedido ASC";
+
+        $resultado = mysqli_query($con, $sql);
+        $mensajes=array();
+        $i = 0;
+        while($fila = mysqli_fetch_array($resultado))
+        {
+            $mensaje = new EquipoAsignado($fila['ID'],$fila['EquipoID'], $fila['PacienteID'], $fila['FechaPedido'],$fila['Cantidad'], $fila['Nombre']);
+            $mensajes[$i] = $mensaje;
+            $i += 1;
+        }
+        mysqli_close($con);
+        return $mensajes;
+    }
+
+    function ordenarPorPrioridad($mensajes)
+    {
+        $arreglo = array();
+        $alta = array();
+        $i = 0;
+        $media = array();
+        $j = 0;
+        $baja = array();
+        $k = 0;
+        foreach($mensajes as $m)
+        {
+            $paciente= consultarPacienteByID($m->pacienteID);
+            if($paciente->prioridad == "Alta")
+            {
+                $alta[$i] = $m;
+                $i += 1;
+            }
+            else if($paciente->prioridad == "Media")
+            {
+                $media[$j] = $m;
+                $j += 1;
+            }
+            else if($paciente->prioridad == "Baja")
+            {
+                $baja[$k] = $m;
+                $k += 1;
+            }
+        }
+
+        $arreglo = array_merge($alta, $media, $baja);
+
+        return $arreglo;
+    }
+
+    function obtenerMensajeByID($id)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Mensajes_admin WHERE ID ='$id'";
+
+        $resultado = mysqli_query($con, $sql);
+        $mensaje=mysqli_fetch_array($resultado);
+        if($mensaje != null)
+        {
+            $mensaje = new EquipoAsignado($mensaje['ID'],$mensaje['EquipoID'], $mensaje['PacienteID'], $mensaje['FechaPedido'],$mensaje['Cantidad'], null);
+        }
+        else
+        {
+            $mensaje = null;
+        }
+        mysqli_close($con);
+        return $mensaje;
      }
+
+     function eliminarMensaje($mensaje)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $bandera = false;
+        $sql = "DELETE FROM mensajes_admin WHERE ID = '$mensaje->id'";
+        if(mysqli_query($con, $sql))
+        {
+            $bandera= true;
+        }
+        mysqli_close($con);
+        return $bandera;
+     }
+
+     function insertarEquipoAsignado($recA)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "INSERT INTO equipos_asignados (EquipoID, PacienteID, FechaPedido, Cantidad) VALUES ('$recA->equipoID', '$recA->pacienteID', '$recA->fechaPedido', '$recA->cantidad')";
+        if(mysqli_query($con, $sql))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        mysqli_close($con);
+     }
+
+    function enviarCorreo($correo,$asunto,$contenido)
+    {
+
+        $header = 'From: '.$correo."\r\n";
+        $header .= "X-Mailer: PHP/".phpversion()."\r\n";
+        $header .= "Mime-Version: 1.0 \r\n";
+        $header = "Content-Type: text/plain";
+
+        return mail($correo, $asunto, $contenido, $header);
+
+    }
+
 ?>
