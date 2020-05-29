@@ -105,18 +105,17 @@
 
     class Recursos_Asignados
     {
-        var $RecursoID;
+        var $recursoID;
         var $pacienteID;
         var $FechaPedido;
         var $cantidad;
         
-        function __construct($RecursoID, $pacienteID,$FechaPedido, $cantidad)
+        function __construct($recursoID, $pacienteID,$FechaPedido, $cantidad)
         {
-            $this->RecursoID = $RecursoID;
+            $this->recursoID = $recursoID;
             $this->pacienteID = $pacienteID;
             $this->FechaPedido = $FechaPedido;
             $this->cantidad = $cantidad;
-
         }
     }
 ?>

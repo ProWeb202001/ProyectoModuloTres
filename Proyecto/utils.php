@@ -575,4 +575,116 @@
         }
         mysqli_close($con);
      }
+
+     
+
+     function obtenerRecursosDisponibles()
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Recursos WHERE Cantidad>0 ORDER BY Cantidad ASC";
+
+        $resultado = mysqli_query($con, $sql);
+        $recursos=array();
+        $i = 0;
+        while($fila = mysqli_fetch_array($resultado))
+        {
+            $recurso = new Recursos($fila['ID'], $fila['Nombre'], $fila['Cantidad']);
+            $recursos[$i] = $recurso;
+            $i += 1;
+        }
+        mysqli_close($con);
+        return $recursos;
+     }
+
+    function updateRecurso($rec)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $bandera = false;
+        $sql = "UPDATE Recursos SET Cantidad='$rec->cantidad'  WHERE ID = '$rec->id';";
+        if(mysqli_query($con, $sql))
+        {
+            $bandera= true;
+        }
+        mysqli_close($con);
+        return $bandera;
+    }
+
+      /**
+     * -----------------------------------------------------------------------
+     * 
+     * Metodos para Recursos Asignados
+     * 
+     * -----------------------------------------------------------------------
+     */
+
+     function obtenerRecursosAsignadosByPaciente($id)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Recursos_Asignados WHERE PacienteID ='$id'";
+
+        $resultado = mysqli_query($con, $sql);
+        $recursosA=array();
+        $i = 0;
+        while($fila = mysqli_fetch_array($resultado))
+        {
+            $idPaciente = $fila['PacienteID'];
+            $idRecurso = $fila['RecursoID'];
+            $recursoA = new Recursos_Asignados($idRecurso, $idPaciente, $fila['FechaPedido'],$fila['Cantidad']);
+            $recursosA[$i] = $recursoA;
+            $i += 1;
+        }
+        mysqli_close($con);
+        return $recursosA;
+     }
+
+     function obtenerRecursoAsignadosByPaciente_Recurso($Pid, $Rid)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Recursos_Asignados WHERE PacienteID ='$Pid' and RecursoID ='$Rid'";
+
+        $resultado = mysqli_query($con, $sql);
+        $recursoA = mysqli_fetch_array($resultado);
+        if($recursoA!=null)
+        {
+            $recursoA = new Recursos_Asignados($recursoA['RecursoID'], $recursoA['PacienteID'], $recursoA['FechaPedido'],$recursoA['Cantidad']);
+        }
+        else
+        {
+            $recursoA = null;
+        }
+        mysqli_close($con);
+        return $recursoA;
+     }
+
+     function insertarRecursoAsignado($recursoA)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "INSERT INTO Recursos_Asignados VALUES ('$recursoA->pacienteID', '$recursoA->recursoID', '$recursoA->cantidad', '$recursoA->FechaPedido')";
+        if(mysqli_query($con, $sql))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        mysqli_close($con);
+     }
+
+     function updateRecursoAsignado($rec)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $bandera = false;
+        $sql = "UPDATE Recursos_Asignados SET FechaPedido='$rec->FechaPedido' ,Cantidad=$rec->cantidad  WHERE PacienteID = '$rec->pacienteID' and RecursoID = '$rec->recursoID';";
+        if(mysqli_query($con, $sql))
+        {
+            $bandera= true;
+        }
+        mysqli_close($con);
+        return $bandera;
+    }
 ?>

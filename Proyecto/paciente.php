@@ -47,6 +47,7 @@ Antes de mostar esta página se debió ejecutar lo siguiente
             $medico = consultarMedicoByID($paciente->medicoID); 
             $cama = consultarCamaByID($paciente->camaID); 
             $habitacion =consultarHabitacionByID($cama->habID); 
+            $recursosAsig = obtenerRecursosAsignadosByPaciente($id);
             $equipos = obtenerEquiposByPaciente($id); 
         }
         else
@@ -87,7 +88,35 @@ Antes de mostar esta página se debió ejecutar lo siguiente
                         $cadena.= "<p><strong>Diagnostico: </strong></p>"; 
                         $cadena.= "<p>$paciente->diagnostico</p>";
 
-                        $cadena.= "<p><strong>Equipos asignados: </strong></p>"; 
+                        $cadena.= "<p><strong>Recursos asignados: </strong></p>"; 
+                        $cadena.= "<table class='table'>
+                                        <thead>
+                                            <tr>
+                                                <th scope='col'>ID del recurso</th>
+                                                <th scope='col'>Nombre del recurso</th>
+                                                <th scope='col'>Fecha de la solicitud</th>
+                                                <th scope='col'>Cantidad</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>";
+                        foreach($recursosAsig as $r)
+                        {
+                            $recurso = consultarRecursoByID($r->recursoID);
+                            $cadena.="<tr>";
+                            $cadena .= "<td>".$recurso->id."</td>";
+                            $cadena .= "<td>".$recurso->nombre."</td>";
+                            $cadena .= "<td>".$r->FechaPedido."</td>";
+                            $cadena .= "<td>".$r->cantidad."</td>";                            
+                        }
+                        $cadena.= "</tbody>
+                            </table>";
+
+                        if(!$admin)
+                        {
+                            $cadena .= "<a href='asignarR.php?id=$id'><button class='btn btn-primary' type='button'>Asignar un Recurso</button></a>";
+                        }
+
+                        $cadena.= "<br><br><p><strong>Equipos asignados: </strong></p>"; 
                         $cadena.= "<table class='table'>
                                         <thead>
                                             <tr>

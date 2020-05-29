@@ -62,7 +62,7 @@ Antes de mostar esta página se debió ejecutar lo siguiente
                             foreach($recursos as $r)
                             {
                                 $cadena.="<tr>";
-                                $cadena .= "<td><a href='recurso.php?id=".$r->id."'>".$r->id."</a></td>";
+                                $cadena .= "<td><a href='modificarRecurso.php?id=".$r->id."'>".$r->id."</a></td>";
                                 $cadena .= "<td>".$r->nombre."</td>";
                                 $cadena .= "<td>".$r->cantidad."</td>";
                                 $cadena .= "</tr>";
