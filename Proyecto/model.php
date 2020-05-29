@@ -68,8 +68,20 @@
             $this->medicoID = $medicoID;
         }
     }
-
-    class EquipoAsigando
+    class Equipos
+    {
+        var $id;
+        var $nombre; 
+        var $cantidad;
+        
+        function __construct($id,$nombre,$cantidad)
+        {
+            $this->id = $id;
+            $this->cantidad = $cantidad;
+            $this->nombre = $nombre;
+        }
+    }
+    class EquipoAsignado
     {
         var $id;
         var $equipoID;

@@ -41,6 +41,8 @@ Antes de mostar esta página se debió ejecutar lo siguiente
                 <a href="listarHabitaciones.php"><button type="button" class= "btn btn-primary">Visualizar Habitaciones</button></a>
                 <a href="listarPacientes.php"><button type="button" class= "btn btn-primary">Visualizar Pacientes</button></a>
                 <a href="listarRecursos.php"><button type="button" class= "btn btn-primary">Visualizar Recursos</button></a>
+                <a href="listarEquipos.php"><button type="button" class= "btn btn-primary">Visualizar Equipos</button></a>
+
             </div>
         </div>
     </body>

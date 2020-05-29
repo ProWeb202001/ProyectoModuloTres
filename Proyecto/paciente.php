@@ -146,9 +146,9 @@ Antes de mostar esta página se debió ejecutar lo siguiente
                         echo $cadena;
                     }
                 ?>
-                <a <?php if($admin){echo "style='display: none'";} ?>href = "listarEquipos.php?id=<?php echo $id; ?>"><button class="btn btn-primary" type ="button">Editar asignación equipos</button></a>
+                <a <?php if($admin){echo "style='display: none'";} ?>href = "asignarEquipos.php?id=<?php echo $id; ?>"><button class="btn btn-primary" type ="button">Editar asignación equipos</button></a>
                 <a href = "listarPacientes.php"><button class="btn btn-primary" type ="button">Volver</button></a>                
             </div>
         </div>
     </body>
-</html>
+</html> 

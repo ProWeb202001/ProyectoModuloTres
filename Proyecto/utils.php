@@ -387,7 +387,51 @@
         mysqli_close($con);
         return $personas;
     }
+    
+    function obtenerPacientesDisponibles_Equipos($id)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
 
+        $sql = "SELECT * FROM Pacientes";
+
+        $resultado = mysqli_query($con, $sql);
+        $personas=array();
+        $bandera = 0;   
+        $i = 0; 
+        while($fila = mysqli_fetch_array($resultado))
+        {
+            $persona = new Paciente($fila['PID'],$fila['Identificacion'],$fila['Nombre'],$fila['Diagnostico'],$fila['Prioridad'],$fila['FechaIngreso'],$fila['DuracionDias'],$fila['CamaID'],$fila['MedicoID']);
+            $equipoA = obtenerEquiposAsignadosByID($persona->pid);
+            $mensajes = obtenerMensajesByPaciente($persona->pid); 
+            $cantidad = count($equipoA); 
+            $cantidad2 = count($mensajes); 
+            if($persona->prioridad =="Alta" && ($cantidad + $cantidad2) < 3)
+            {
+                $bandera= 1; 
+            }
+            else if($persona->prioridad =="Media" &&  ($cantidad + $cantidad2) < 2)
+            {
+                $bandera= 1; 
+            }
+            else if($persona->prioridad =="Baja" &&  ($cantidad + $cantidad2) < 1)
+            {
+                $bandera= 1; 
+            }
+            if($bandera == 1)
+            {
+                if($persona->pid != $id)
+                {
+                    $personas[$i] = $persona;
+                    $i += 1;
+                }
+                
+            }
+        }
+
+
+        mysqli_close($con);
+        return $personas;
+    }
     function obtenerPacientesByMedico($medicoID)
     {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
@@ -474,7 +518,6 @@
     function obtenerEquiposByPaciente($id)
     {
         $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
-        $sql = "SELECT * FROM equipos_asignados Where PacienteID='$id'";
         $sql = "SELECT equipos_asignados.ID,EquipoID,PacienteID,FechaPedido,equipos_asignados.Cantidad,Nombre 
         FROM equipos_asignados 
         INNER JOIN equipos ON 
@@ -485,7 +528,7 @@
         $i = 0;
         while($fila = mysqli_fetch_array($resultado))
         {
-            $equipo = new EquipoAsigando($fila['ID'],$fila['EquipoID'],$fila['PacienteID'],$fila['FechaPedido'],$fila['Cantidad'],$fila['Nombre']); 
+            $equipo = new EquipoAsignado($fila['ID'],$fila['EquipoID'],$fila['PacienteID'],$fila['FechaPedido'],$fila['Cantidad'],$fila['Nombre']); 
             $equipos[$i] = $equipo;
             $i += 1;
         }
@@ -687,4 +730,264 @@
         mysqli_close($con);
         return $bandera;
     }
+
+      /**
+     * -----------------------------------------------------------------------
+     * 
+     * Metodos para Equipos
+     * 
+     * -----------------------------------------------------------------------
+     */
+    function obtenerEquiposDisponibles()
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Equipos WHERE Cantidad>0 ORDER BY Cantidad ASC";
+
+        $resultado = mysqli_query($con, $sql);
+        $equipos=array();
+        $i = 0;
+        while($fila = mysqli_fetch_array($resultado))
+        {
+            $recurso = new Recursos($fila['ID'], $fila['Nombre'], $fila['Cantidad']);
+            $recursos[$i] = $recurso;
+            $i += 1;
+        }
+        mysqli_close($con);
+        return $recursos;
+     }
+     function consultarEquipo($nombre)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Equipos WHERE Nombre='$nombre'";
+
+        $resultado = mysqli_query($con, $sql);
+        $equipo = mysqli_fetch_array($resultado);
+        if($equipo!=null)
+        {
+            $equipo = new Recursos($equipo['ID'],$equipo['Nombre'],$equipo['Cantidad']);
+        }
+        else
+        {
+            $equipo = null;
+        }
+        mysqli_close($con);
+        return $equipo;
+     }
+     function consultarEquipoByID($id)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Equipos WHERE ID='$id'";
+
+        $resultado = mysqli_query($con, $sql);
+        $equipo = mysqli_fetch_array($resultado);
+        if($equipo!=null)
+        {
+            $equipo = new Equipos($equipo['ID'],$equipo['Nombre'],$equipo['Cantidad']);
+        }
+        else
+        {
+            $equipo = null;
+        }
+        mysqli_close($con);
+        return $equipo;
+     }
+     function consultarEquipoAsignadoByID($id)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $sql = "SELECT equipos_asignados.ID,EquipoID,PacienteID,FechaPedido,equipos_asignados.Cantidad,Nombre 
+        FROM equipos_asignados 
+        INNER JOIN equipos ON 
+        equipos_asignados.EquipoID=equipos.ID
+        WHERE equipos_asignados.ID='$id'";
+
+        $resultado = mysqli_query($con, $sql);
+        $equipo = mysqli_fetch_array($resultado);
+        if($equipo!=null)
+        {
+            $equipo = new EquipoAsignado($equipo['ID'],$equipo['EquipoID'],$equipo['PacienteID'],$equipo['FechaPedido'], $equipo['Cantidad'],$equipo['Nombre']);
+        }
+        else
+        {
+            $equipo = null;
+        }
+        mysqli_close($con);
+        return $equipo;
+     }
+     function obtenerEquipoAsignadosByPaciente_Equipo($Pid, $Eid)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Equipos_Asignados WHERE PacienteID ='$Pid' and EquipoID ='$Eid'";
+
+        $resultado = mysqli_query($con, $sql);
+        $equipoA = mysqli_fetch_array($resultado);
+        if($equipoA!=null)
+        {
+            $equipoA = new EquipoAsignado($equipoA['ID'],$equipoA['EquipoID'], $equipoA['PacienteID'], $equipoA['FechaPedido'],$equipoA['Cantidad'], null);
+        }
+        else
+        {
+            $equipoA = null;
+        }
+        mysqli_close($con);
+        return $equipoA;
+     }
+
+     function obtenerMensajesByEquipoPaciente($Pid, $Eid)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Mensajes_admin WHERE PacienteID ='$Pid' and EquipoID ='$Eid'";
+
+        $resultado = mysqli_query($con, $sql);
+        $equipoA = mysqli_fetch_array($resultado);
+        if($equipoA!=null)
+        {
+            $equipoA = new EquipoAsignado($equipoA['ID'],$equipoA['EquipoID'], $equipoA['PacienteID'], $equipoA['FechaPedido'],$equipoA['Cantidad'], null);
+        }
+        else
+        {
+            $equipoA = null;
+        }
+        mysqli_close($con);
+        return $equipoA;
+     }
+     
+
+     function insertarMensaje($mensaje)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "INSERT INTO mensajes_admin (EquipoID, PacienteID, FechaPedido, Cantidad) VALUES ('$mensaje->equipoID', '$mensaje->pacienteID', '$mensaje->fechaPedido', '$mensaje->cantidad')";
+        if(mysqli_query($con, $sql))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        mysqli_close($con);
+     }
+
+     function obtenerMensajesByPaciente($Pid)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM Mensajes_admin WHERE PacienteID ='$Pid'";
+
+        $resultado = mysqli_query($con, $sql);
+        $equipos=array();
+        $i = 0;
+        while($fila = mysqli_fetch_array($resultado))
+        {
+            $equipoA = new EquipoAsignado($fila['ID'],$fila['EquipoID'], $fila['PacienteID'], $fila['FechaPedido'],$fila['Cantidad'], null);
+            $equipos[$i] = $equipoA;
+            $i += 1;
+        }
+        mysqli_close($con);
+        return $equipos;
+     }
+
+    function obtenerEquiposAsignados()
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $sql = "SELECT equipos_asignados.ID,EquipoID,PacienteID,FechaPedido,equipos_asignados.Cantidad,Nombre 
+        FROM equipos_asignados 
+        INNER JOIN equipos ON 
+        equipos_asignados.EquipoID=equipos.ID";
+        $resultado = mysqli_query($con, $sql);
+        $equipos=array();
+        $i = 0;
+        while($fila = mysqli_fetch_array($resultado))
+        {
+            $equipo = new EquipoAsignado($fila['ID'],$fila['EquipoID'],$fila['PacienteID'],$fila['FechaPedido'],$fila['Cantidad'],$fila['Nombre']); 
+            $equipos[$i] = $equipo;
+            $i += 1;
+        }
+        mysqli_close($con);
+        return $equipos;
+    }
+     function insertarEquipo($rec)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "INSERT INTO Equipos (Nombre, Cantidad) VALUES ('$rec->nombre', '$rec->cantidad')";
+        if(mysqli_query($con, $sql))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        mysqli_close($con);
+     }
+    function updateEquipo($rec)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $bandera = false;
+        $sql = "UPDATE Equipos SET Cantidad='$rec->cantidad'  WHERE ID = '$rec->id';";
+        if(mysqli_query($con, $sql))
+        {
+            $bandera= true;
+        }
+        mysqli_close($con);
+        return $bandera;
+    }
+    function updateEquipoAsignado($rec)
+    {
+        echo "Id eA: ".$rec->id." Id pacienteN: ".$rec->pacienteID;
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $bandera = false;
+        $sql = "UPDATE Equipos_Asignados SET PacienteID='$rec->pacienteID'  WHERE ID = '$rec->id'";
+        if(mysqli_query($con, $sql))
+        {
+            $bandera= true;
+        }
+        mysqli_close($con);
+        return $bandera;
+    }
+    function obtenerEquiposAsignadosByID($id)
+    {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+        $sql = "SELECT equipos_asignados.ID,EquipoID,PacienteID,FechaPedido,equipos_asignados.Cantidad,Nombre 
+        FROM equipos_asignados 
+        INNER JOIN equipos ON 
+        equipos_asignados.EquipoID=equipos.ID 
+        where equipos_asignados.ID = '$id'";
+        $resultado = mysqli_query($con, $sql);
+        $equipos=array();
+        $i = 0;
+        while($fila = mysqli_fetch_array($resultado))
+        {
+            $equipo = new EquipoAsignado($fila['ID'],$fila['EquipoID'],$fila['PacienteID'],$fila['FechaPedido'],$fila['Cantidad'],$fila['Nombre']); 
+            $equipos[$i] = $equipo;
+            $i += 1;
+        }
+        mysqli_close($con);
+        return $equipos;
+    }
+    function obtenerEquipoAsignadoByID($id)
+     {
+        $con = mysqli_connect(HOST_DB,USUARIO_DB,USUARIO_PASS,NOMBRE_DB);
+
+        $sql = "SELECT * FROM equipos_asignados WHERE ID ='$id'";
+
+        $resultado = mysqli_query($con, $sql);
+        $equipoA = mysqli_fetch_array($resultado);
+        if($equipoA!=null)
+        {
+            $equipoA = new EquipoAsignado($equipoA['ID'],$equipoA['EquipoID'], $equipoA['PacienteID'], $equipoA['FechaPedido'],$equipoA['Cantidad'], null);
+        }
+        else
+        {
+            $equipoA = null;
+        }
+        mysqli_close($con);
+        return $equipoA;
+     }
 ?>

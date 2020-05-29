@@ -31,7 +31,7 @@ Antes de mostar esta página se debió ejecutar lo siguiente
             }
             else
             {
-                $aux = consultarRecurso($nombre);
+                $aux = consultarEquipo($nombre); 
                 if($aux != null)
                 {
                     $_SESSION['errNombre'] = "Ya existe un Recurso con este nombre!";
@@ -58,23 +58,23 @@ Antes de mostar esta página se debió ejecutar lo siguiente
 
         if($error == true)
         {
-            header("Location: agregarR.php");
+            header("Location: agregarEquipos.php");
         }
         else
         {
             eliminarSessionV('nombre');
             eliminarSessionV('cantidad');
             
-            $rec = new Recursos(null, $nombre, $cantidad);
+            $rec = new Equipos(null, $nombre, $cantidad);
 
-            if(insertarRecurso($rec))
+            if(insertarEquipo($rec))
             {
-                header("Location: listarRecursos.php");
+                header("Location: listarEquipos.php");
             }
             else
             {
-                $_SESSION['errNombre'] = "Error al crear el recurso!";
-                header("Location: agregarR.php");
+                $_SESSION['errNombre'] = "Error al crear el equipo!";
+                header("Location: agregarEquipos.php");
             }
         }
     }

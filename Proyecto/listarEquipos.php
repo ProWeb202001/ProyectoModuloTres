@@ -30,7 +30,8 @@ Antes de mostar esta página se debió ejecutar lo siguiente
 
     if($error == false)
     {
-        $recursos = obtenerRecursos();        
+        $equiposDisponibles = obtenerEquiposDisponibles(); 
+        $equiposAsignados = obtenerEquiposAsignados();        
     }
 
 ?>
@@ -39,13 +40,16 @@ Antes de mostar esta página se debió ejecutar lo siguiente
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Visualizar Recursos></title>
+        <title>VisualizarEquipos</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     </head>
     <body>
         <div class="container" style="border-radius: 30px;border: solid;padding: 30px;margin-top: 3%;">
             <div class="container">
-                <h2>Visualizar Recursos</h2>
+                <h2>Visualizar Equipos</h2>
+            </div>
+            <div class="container">
+                <h5>Equipos Disponibles</h5>
             </div>
             <div class="container">
                 <table class="table">
@@ -59,10 +63,10 @@ Antes de mostar esta página se debió ejecutar lo siguiente
                     <tbody>
                         <?php
                             $cadena = "";
-                            foreach($recursos as $r)
+                            foreach($equiposDisponibles as $r)
                             {
                                 $cadena.="<tr>";
-                                $cadena .= "<td><a href='modificarRecurso.php?id=".$r->id."'>".$r->id."</a></td>";
+                                $cadena .= "<td><a href='modificarEquipo.php?id=".$r->id."'>".$r->id."</a></td>";
                                 $cadena .= "<td>".$r->nombre."</td>";
                                 $cadena .= "<td>".$r->cantidad."</td>";
                                 $cadena .= "</tr>";
@@ -73,7 +77,42 @@ Antes de mostar esta página se debió ejecutar lo siguiente
                 </table>
             </div>
             <div class="container">
-                <a href = "agregarR.php"><button class="btn btn-primary" type ="button">+</button></a>
+                <a href = "agregarEquipos.php"><button class="btn btn-primary" type ="button">+</button></a>  
+            </div>
+            <br>
+            <br>
+            <div class="container">
+                <h5>Equipos Asignados</h5>
+            </div>
+            <div class="container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Nombre del Paciente</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                            $cadena = "";
+                            foreach($equiposAsignados as $r)
+                            {
+                                $paciente = consultarPacienteByID($r->pacienteID);
+                                $cadena.="<tr>";
+                                $cadena .= "<td><a href='modificarEquipoAsignado.php?id=".$r->id."'>".$r->id."</a></td>";
+                                $cadena .= "<td>".$r->nombre."</td>";
+                                $cadena .= "<td>".$r->cantidad."</td>";
+                                $cadena .= "<td>".$paciente->nombre."</td>";
+                                $cadena .= "</tr>";
+                            }
+                            echo $cadena;
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+            <div>
                 <a href = "admin.php"><button class="btn btn-primary" type ="button">Volver</button></a>
             </div>
         </div>
