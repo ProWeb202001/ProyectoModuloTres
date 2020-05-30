@@ -1,7 +1,7 @@
 <!--
 Antes de mostar esta página se debió ejecutar lo siguiente 
-1. crearDb.php en la carpeta anterior
-2. crearTabla.php en la carpeta anterior
+1. crearDb.php
+2. crearTabla.php
 -->
 
 <?php
