@@ -10,5 +10,6 @@ Bogotá - Colombia
 2020-1
 
 Juan Sebastián Prado Valero
+
 Gustavo Antonio Rivera Delgado
 
